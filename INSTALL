@@ -1,0 +1,7 @@
+In brief,
+	Unix:	 cp *.py *.inx /usr/share/inkscape/extensions/
+
+	Windows: copy every .py and .inx file 
+		 inside {YOUR INKSCAPE FOLDER}\share\inkscape\extensions
+
+You can find the latest tarball here: http://freaknet.org/alpt/src/gdadin/tarball

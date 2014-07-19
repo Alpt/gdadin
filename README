@@ -1,0 +1,224 @@
+				
+                                  Gdadin
+		     http://freaknet.org/alpt/src/gdadin
+               GUI to Draw Algorithms Designed with Inkscape
+
+
+Gdadin is an Inkscape effect. It creates complex drawings from simple rules
+The rules are defined with an intuitive GUI based on the Copy&Paste principle.
+
+The Gdadin concept and its main design have been heavily inspired by
+Cfdg ( http://www.contextfreeart.org/ ), a programming language used to
+compose and create drawings. Almost all drawings created with Cfdg can be
+reproduced with Gdadin.
+
+--
+  0. Examples and Lessons
+  1. General workflow
+  2. Recursion and cycles
+	2.1  Size rule 
+  3. Shape call parameters
+	3.1  Recursion depth
+	3.2  Colors
+  4. Random shapes
+	4.1  Random seed
+  5. Limits
+  6. Tips
+--
+
+0.   Examples and Lessons
+
+For examples look in examples/ or here: http://freaknet.org/alpt/src/gdadin/examples/
+
+You can find video lessons here:  http://freaknet.org/alpt/src/gdadin/lessons/
+
+1.   General workflow
+
+A Gdadin shape is a group of objects created with inkscape, f.e. a square, a
+star, text. 
+To define a new shape:
+	- select the objects
+	- Use "Effects->Gdadin->Define" a new shape
+	- The defined shape will be exactly on top of the selected objects.
+	  The shape contains a copy of the objects therefore you can freely
+	  delete the originals.
+
+Defined shapes can be copied and pasted like any other normal object. 
+In order to edit a defined shape, you must enter inside its group: 
+"Right click->Enter" group (and remember to exit: "Right click -> Go to Parent").
+
+You can paste a shape A inside another shape B:
+	- select the shape A
+	 (be sure to select its whole group and not just some single elements
+	  of the shape)
+	- copy it
+	- enter in the shape B (enter group)
+	- paste
+	- exit from the shape B
+
+NOTE: The pasted shape is just a reference to the original shape: the rendering 
+will delete the reference and substitute it with the original. Therefore,
+	1) if you want to modify the pasted shape you have to modify just the
+	   original one.
+	2) you can't delete the shape if it has been referenced by another
+	   shape and you want to render it.
+
+To define a recursive shape: copy and paste the shape inside itself. In other
+words,
+	- copy the shape A
+	- enter inside the shape A
+	- paste it
+	- exit from the shape A
+
+Finally, select the final shapes you'd like to render and use 
+"Effects->Gdadin->Render selected shapes".
+
+Here below we'll explain how to use cycles, color variations and random
+shapes.
+
+
+2.   Recursion and cycles
+
+2.1  Size rule 
+
+Suppose you've defined a recursive shape A and you render it.
+If it definitively grows smaller, Gdadin will halt the recursion when the
+shape becomes too small to be seen.
+Example:
+	- draw a rectangle, select it and define a new shape.
+	- copy the shape, enter inside the shape, paste it
+	- shrink it 
+	- go to parent, select the shape, render it
+
+When it isn't possible to apply the size rule you have to manually set a
+limit. The render dialog offers you the "Maximum number of shapes" option.
+It is the absolute maximum number of shape substitution that will be performed
+during the rendering.
+This option is useful to experiment with complex drawings: with a low number
+you can render the drawing quickly, hit CTRL+z, and return to edit.
+
+3.   Shape call parameters
+
+3.1  Recursion depth
+
+The recursion depth parameter can be assigned to a referenced/pasted shape,
+generally a recursive one. It specifies how many child shapes of the referenced
+shape will be created. This is useful to create cycles.
+For example:
+	- Let's create a tower using the size rule:
+		- draw a rectangle, select it
+		- define new shape, copy the shape, enter inside the shape, paste
+		- shrink the pasted shape and move it on top of the big
+		  rectangle
+		- go to parent
+	- Now we'll rotate the tower three times:
+		- select the tower shape, copy it
+		- enter in the tower shape, paste in place (CTRL+ALT+v)
+		- rotate it
+		- keep it selected, and open the dialog
+		  "Effects->Gdadin->Set the shape call parameter"
+		- Set "Recursion depth" to 2.
+		- go to parent
+	- Let's render it (without any limit, i.e. "maximum number of shape"
+	  set to 0) 
+	- You should get the tower rotated three times.
+
+You've just seen how to create a cycle.
+
+3.2  Colors
+
+These parameters define how the color of a referenced shape will change over
+time, i.e. the new color that its same child shape will have.
+
+The parameters are Hue, Saturation, Brightness, Opacity (If you don't know
+what they are, just draw an object, hit CTRL+SHIFT+f "Fill and Stroke", go to the 
+HSL tab, and experiment)
+
+We'll describe just the Hue parameter:
+
+	- The "Relative hue change" is an integer in the range [-1000, 1000].
+	  It is used to calculate the new Hue of the child of the referenced
+	  shape:
+	  	 newhue = referenced_shape_hue + relative_hue_change/1000.0
+
+	  Note: relative_hue_change can be also negative.
+	  Note: the Hue is a real parameter in the range [0, 1]. Thus,
+	  	relative_hue_change = 1 is a very little increment
+		relative_hue_change = 10 is a smooth, gradual increment
+		relative_hue_change = 100 is a steep increment
+		
+	- "Maximum hue value" sets a ceil for the newhue:
+		
+		if newhue >= maximum_hue_value/1000.0 then
+			newhue = maximum_hue_value/1000.0
+
+	  In other words, when the hue reaches the maximum_hue_value, the
+	  variation stops: the new childs will have the same hue.
+
+	  You can disable it by choosing a negative value, f.e. -1.
+	  This is the default.
+	  In this case, the hue will change cyclically, f.e. 
+
+	  	initial_hue = 312,  relative_hue_change = 10
+		312 322 332  ... 982 992  2  12  22  ...
+
+	  	initial_hue = 312,  relative_hue_change = -10
+		312 302 292  ... 32 22 12 2 992 982 ...
+
+	- "Minimum hue value". The same as before, but sets a floor instead.
+
+4.   Random shapes
+
+When you define a new shape, you can set two (optional) parameters: 
+	1) The shape name
+	2) The shape weight
+Suppose now that you define more than one shape with the same name and you
+reference, i.e. copy and paste, at least one of them.
+In this case, during the rendering, Gdadin will resolve the reference by
+choosing randomly one of the shapes with the same name.
+
+The weight specifies how much probability has each the shape to be chosen.
+
+Hint: random shapes are useful to give an organic feel to the drawing.
+
+4.1  Random seed
+
+Naturally, each time you render a random shape, you'll get a different
+results. 
+In order to fix a unique result, you can set an arbitrary alphanumeric string
+in the "Random seed" parameter of the render dialog.
+
+You can check what seed has been used during the rendering by looking in the
+XML editor:
+	- select the final rendered shape
+	- hit CTRL+SHIFT+x
+	- read the "inkscape:seed" attribute.
+This procedure is useful if you want to reproduce a same random rendering.
+
+5.   Limits	
+
+It's slow: very complicated shapes, with more than thousand shapes can take a
+while to render and can easily fill up memory.
+
+6.   Tips
+
+	1) use a low Max Number of Shapes to test the drawing
+
+	2) save before rendering
+
+	3) After a long rendering: 
+		- don't touch anything
+		- export to bitmap (SHIFT+CTRL+e) as soon as possible.
+		  As export area choose "Page", because after a rendering
+		  Gdadin will automatically resize the page to contain the
+		  final drawing.
+	 	- you can export to bitmap by commandline (it's better):
+			- save the rendering to file.svg
+			- inkscape file.svg -C -e out.png -w 640 -h 480
+
+	4) Learn to use the XML editor
+
+7.   Authors
+
+Andrea Lo Pumo  aka  AlpT (@freaknet.org)
+

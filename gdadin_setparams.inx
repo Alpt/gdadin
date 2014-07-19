@@ -1,0 +1,33 @@
+<inkscape-extension>
+    <_name>Set the shape call parameters</_name>
+    <id>org.inkscape.gdadin.setparams</id>
+	<dependency type="executable" location="extensions">gdadin.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+	<param name="scprdepth" type="int" min="0" max="9999999" gui-text=" Recursion depth (0 is infinite) ">0</param>
+	
+	<param name="scphue" type="int" min="-1000" max="1000" gui-text=" Relative hue change ">0</param>
+	<param name="scphuefloor" type="int" min="-1" max="1000" gui-text="   Minimum hue value (disabled if -1) ">-1</param>
+	<param name="scphueceil" type="int" min="-1" max="1000" gui-text="   Maximum hue value (disabled if -1) ">-1</param>
+
+	<param name="scpsat" type="int" min="-1000" max="1000" gui-text=" Relative saturation change ">0</param>
+	<param name="scpsatfloor" type="int" min="-1" max="1000" gui-text="   Minimum sat value (disabled if -1) ">-1</param>
+	<param name="scpsatceil" type="int" min="-1" max="1000" gui-text="   Maximum sat value (disabled if -1) ">-1</param>
+
+	<param name="scpbri" type="int" min="-1000" max="1000" gui-text=" Relative brightness change ">0</param>
+	<param name="scpbrifloor" type="int" min="-1" max="1000" gui-text="   Minimum bri value (disabled if -1) ">-1</param>
+	<param name="scpbriceil" type="int" min="-1" max="1000" gui-text="   Maximum bri value (disabled if -1) ">-1</param>
+
+	<param name="scpopa" type="int" min="-1000" max="1000" gui-text=" Relative opacity change ">0</param>
+	<param name="scpopafloor" type="int" min="-1" max="1000" gui-text="   Minimum opa value (disabled if -1) ">0</param>
+	<param name="scpopaceil" type="int" min="-1" max="1000" gui-text=" Maximum opa value (disabled if -1) ">1000</param>
+
+    <effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu _name="Gdadin"/>
+		</effects-menu>
+    </effect>
+    <script>
+        <command reldir="extensions" interpreter="python">gdadin_setparams.py</command>
+    </script>
+</inkscape-extension>

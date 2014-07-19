@@ -1,0 +1,17 @@
+<inkscape-extension>
+    <_name>Render selected shapes</_name>
+    <id>org.inkscape.gdadin.render</id>
+	<dependency type="executable" location="extensions">gdadin.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+	<param name="renderseed" type="string" gui-text="Random seed (optional)  "></param>
+	<param name="rendermaxshapes" type="int" min="0" max="99999999" gui-text="Maximum number of shapes (0 is infinite)  ">0</param>
+    <effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			<submenu _name="Gdadin"/>
+		</effects-menu>
+    </effect>
+    <script>
+        <command reldir="extensions" interpreter="python">gdadin_render.py</command>
+    </script>
+</inkscape-extension>
